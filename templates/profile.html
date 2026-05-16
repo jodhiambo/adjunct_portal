@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+
+    <div class="col-md-8">
+
+        <div class="card shadow">
+
+            <div class="card-body text-center">
+
+                {% if profile.profile_picture %}
+
+                    <img src="{{ profile.profile_picture.url }}"
+                         width="150"
+                         height="150"
+                         class="rounded-circle mb-3">
+
+                {% endif %}
+
+                <h2>
+                    {{ profile.user.username }}
+                </h2>
+
+                <hr>
+
+                <p>
+                    <strong>Research Area:</strong>
+                    {{ profile.research_area }}
+                </p>
+
+                <p>
+                    <strong>Institution:</strong>
+                    {{ profile.institution }}
+                </p>
+
+                <p>
+                    <strong>Achievements:</strong><br>
+                    {{ profile.achievements }}
+                </p>
+
+                <p>
+                    <strong>Research Proposals Applied:</strong>
+                    {{ profile.proposals_applied }}
+                </p>
+
+                <p>
+                    <strong>Research Proposals Won:</strong>
+                    {{ profile.proposals_won }}
+                </p>
+
+                <a href="/edit-profile/"
+                   class="btn btn-primary">
+
+                   Edit Profile
+
+                </a>
+
+                {% if not profile.application_submitted %}
+
+                <a href="/apply-adjunct/"
+                class="btn btn-success">
+
+                Apply as Adjunct Researcher
+
+                </a>
+
+                {% else %}
+
+                    <div class="alert alert-info mt-3">
+
+                        Application Status:
+                        <strong>
+                            {{ profile.application_status }}
+                        </strong>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

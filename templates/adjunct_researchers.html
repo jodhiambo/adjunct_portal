@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2 class="mb-4">
+    Approved Adjunct Researchers
+</h2>
+
+<div class="row">
+
+    {% for researcher in researchers %}
+
+        <div class="col-md-4 mb-4">
+
+            <div class="card shadow">
+
+                <div class="card-body text-center">
+
+                    {% if researcher.profile_picture %}
+
+                        <img src="{{ researcher.profile_picture.url }}"
+                             width="120"
+                             height="120"
+                             class="rounded-circle mb-3">
+
+                    {% endif %}
+
+                    <h4>
+                        {{ researcher.user.username }}
+                    </h4>
+
+                    <p>
+                        {{ researcher.research_area }}
+                    </p>
+
+                    <p>
+                        {{ researcher.institution }}
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    {% endfor %}
+
+</div>
+
+{% endblock %}
