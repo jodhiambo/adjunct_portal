@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+
+    <div class="col-md-10">
+
+        <div class="card shadow">
+
+            <div class="card-body">
+
+                <div class="text-center">
+
+                    {% if researcher.profile_picture %}
+
+                        <img src="{{ researcher.profile_picture.url }}"
+                             width="180"
+                             height="180"
+                             class="rounded-circle mb-4">
+
+                    {% endif %}
+
+                    <h2>
+                        {{ researcher.user.username }}
+                    </h2>
+
+                    <p>
+                        <strong>Research Area:</strong>
+                        {{ researcher.research_area }}
+                    </p>
+
+                    <p>
+                        <strong>Institution:</strong>
+                        {{ researcher.institution }}
+                    </p>
+
+                </div>
+
+                <hr>
+
+                <h4>Brief Profile</h4>
+
+                <p>
+                    {{ researcher.brief_profile|safe }}
+                </p>
+
+                <hr>
+
+                <h4>Work Experience</h4>
+
+                <p>
+                    {{ researcher.work_experience|safe }}
+                </p>
+
+                <hr>
+
+                <h4>Grants / Prizes / Fellowships</h4>
+
+                <p>
+                    {{ researcher.grants_fellowships|safe }}
+                </p>
+
+                <hr>
+
+                <h4>Publications</h4>
+
+                <p>
+                    {{ researcher.publications|safe }}
+                </p>
+
+                <hr>
+
+                <h4>Research Statistics</h4>
+
+                <p>
+                    <strong>Proposals Applied:</strong>
+                    {{ researcher.proposals_applied }}
+                </p>
+
+                <p>
+                    <strong>Proposals Won:</strong>
+                    {{ researcher.proposals_won }}
+                </p>
+
+                {% if researcher.cv %}
+
+                    <a href="{{ researcher.cv.url }}"
+                       class="btn btn-success"
+                       target="_blank">
+
+                       Download CV
+
+                    </a>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

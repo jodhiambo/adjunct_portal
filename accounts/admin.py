@@ -1,5 +1,6 @@
 from django.contrib import admin
 from .models import ResearcherProfile
+from .models import Publication
 
 
 @admin.register(ResearcherProfile)
@@ -16,3 +17,6 @@ class ResearcherProfileAdmin(admin.ModelAdmin):
         'application_status',
         'is_adjunct_researcher',
     ]
+
+#Register Publication model in admin
+admin.site.register(Publication)

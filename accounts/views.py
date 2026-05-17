@@ -3,10 +3,16 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .models import ResearcherProfile
-from .forms import ResearcherProfileForm
-from .forms import AdjunctApplicationForm
+from .forms import (
+    ResearcherProfileForm,
+    AdjunctApplicationForm,
+    PublicationForm
+)
 #protecting view
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404
+from django.db.models import Q
+from .models import Publication
 
 
 def signup_view(request):
@@ -167,10 +173,82 @@ def apply_adjunct_view(request):
 #adjunct researcher being viewed publicly
 def adjunct_researchers_view(request):
 
+    query = request.GET.get('q')
+
     researchers = ResearcherProfile.objects.filter(
         is_adjunct_researcher=True
     )
 
-    return render(request, 'adjunct_researchers.html',
-        {'researchers': researchers}
+    if query:
+
+        researchers = researchers.filter(
+
+            Q(user__username__icontains=query) |
+
+            Q(research_area__icontains=query) |
+
+            Q(institution__icontains=query) |
+
+            Q(publications__icontains=query)
+
+        )
+
+    return render(
+        request,
+        'adjunct_researchers.html',
+        {
+            'researchers': researchers,
+            'query': query
+        }
+    )
+
+def researcher_detail_view(request, id):
+
+    researcher = get_object_or_404(
+        ResearcherProfile,
+        id=id,
+        is_adjunct_researcher=True
+    )
+
+    return render(
+        request,
+        'researcher_details.html',
+        {'researcher': researcher}
+    )
+
+#Research publication view
+@login_required
+def add_publication_view(request):
+
+    profile = ResearcherProfile.objects.get(
+        user=request.user
+    )
+
+    if request.method == 'POST':
+
+        form = PublicationForm(
+            request.POST,
+            request.FILES
+        )
+
+        if form.is_valid():
+
+            publication = form.save(
+                commit=False
+            )
+
+            publication.researcher = profile
+
+            publication.save()
+
+            return redirect('profile')
+
+    else:
+
+        form = PublicationForm()
+
+    return render(
+        request,
+        'add_publication.html',
+        {'form': form}
     )

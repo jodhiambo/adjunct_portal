@@ -37,7 +37,7 @@
 
                 <p>
                     <strong>Achievements:</strong><br>
-                    {{ profile.achievements }}
+                    {{ profile.achievements|safe }}
                 </p>
 
                 <p>
@@ -79,7 +79,176 @@
 
                 {% endif %}
 
+                {% if profile.cv %}
+
+                    <p>
+                        <a href="{{ profile.cv.url }}"
+                        target="_blank">
+
+                        View CV
+
+                        </a>
+                    </p>
+
+                {% endif %}
+                {% if profile.application_letter %}
+                    <p>
+                        <a href="{{ profile.application_letter.url }}"
+                        target="_blank">
+
+                        View Application Letter
+
+                        </a>
+                    </p>
+                {% endif %}
+
             </div>
+
+        </div>
+
+    </div>
+<!-- show publications -->
+    <hr>
+
+<h4>
+    Publications
+</h4>
+
+{% for publication in researcher.publications_list.all %}
+
+    <div class="card mb-3">
+
+        <div class="card-body">
+
+            <h5>
+                {{ publication.title }}
+            </h5>
+
+            <p>
+                <strong>Journal:</strong>
+                {{ publication.journal }}
+            </p>
+
+            <p>
+                <strong>Year:</strong>
+                {{ publication.publication_year }}
+            </p>
+
+            <p>
+                <strong>Category:</strong>
+                {{ publication.category }}
+            </p>
+
+            {% if publication.doi_link %}
+
+                <p>
+
+                    <a href="{{ publication.doi_link }}"
+                       target="_blank">
+
+                       DOI / Publication Link
+
+                    </a>
+
+                </p>
+
+            {% endif %}
+
+            {% if publication.publication_pdf %}
+
+                <p>
+
+                    <a href="{{ publication.publication_pdf.url }}"
+                       target="_blank">
+
+                       View PDF
+
+                    </a>
+
+                </p>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    {% empty %}
+
+    <!-- <p>
+        No publications available.
+    </p> -->
+
+    {% endfor %}
+
+<a href="/add-publication/"
+   class="btn btn-success mb-3">
+
+   Add Publication
+
+</a>
+
+{% for publication in profile.publications_list.all %}
+
+    <div class="card mb-3">
+
+        <div class="card-body">
+
+            <h5>
+                {{ publication.title }}
+            </h5>
+
+            <p>
+                <strong>Journal:</strong>
+                {{ publication.journal }}
+            </p>
+
+            <p>
+                <strong>Year:</strong>
+                {{ publication.publication_year }}
+            </p>
+
+            <p>
+                <strong>Category:</strong>
+                {{ publication.category }}
+            </p>
+
+            {% if publication.doi_link %}
+
+                <p>
+
+                    <a href="{{ publication.doi_link }}"
+                       target="_blank">
+
+                       DOI / Publication Link
+
+                    </a>
+
+                </p>
+
+            {% endif %}
+
+            {% if publication.publication_pdf %}
+
+                <p>
+
+                    <a href="{{ publication.publication_pdf.url }}"
+                       target="_blank">
+
+                       View PDF
+
+                    </a>
+
+                </p>
+
+            {% endif %}
+            {% empty %}
+
+                <p>
+                    No publications added yet.
+                </p>
+
+            {% endfor %}
 
         </div>
 

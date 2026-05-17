@@ -12,13 +12,19 @@
 
     <div class="container">
 
-        <a class="navbar-brand">
+        <a href="/" class="navbar-brand">
             Adjunct Research Portal
         </a>
 
         <div>
 
             {% if request.user.is_authenticated %}
+                <a href="/"
+                    class="btn btn-outline-info btn-sm">
+
+                    Researchers
+
+                </a>
 
                 <a href="/profile/"
                    class="btn btn-outline-light btn-sm">
@@ -42,6 +48,12 @@
                 </a>
 
             {% else %}
+                <a href="/"
+                    class="btn btn-outline-info btn-sm">
+
+                    Researchers
+
+                </a>
 
                 <a href="/login/"
                    class="btn btn-outline-light btn-sm">
@@ -80,5 +92,8 @@
 
 </div>
 
+{% if form %}
+    {{ form.media }}
+{% endif %}
 </body>
 </html>
