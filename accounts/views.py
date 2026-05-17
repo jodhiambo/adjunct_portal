@@ -13,6 +13,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from .models import Publication
+from django.core.paginator import Paginator
 
 
 def signup_view(request):
@@ -177,7 +178,11 @@ def adjunct_researchers_view(request):
 
     researchers = ResearcherProfile.objects.filter(
         is_adjunct_researcher=True
-    )
+    ) .order_by('-proposals_won')  # Sort by proposals won in descending order
+
+    paginator = Paginator(researchers, 6)  # Show 6 researchers per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
     if query:
 
@@ -198,7 +203,8 @@ def adjunct_researchers_view(request):
         'adjunct_researchers.html',
         {
             'researchers': researchers,
-            'query': query
+            'query': query,
+            'researchers': page_obj
         }
     )
 

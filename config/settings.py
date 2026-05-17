@@ -39,6 +39,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'ckeditor',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 ]
 
 MIDDLEWARE = [
@@ -47,6 +52,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -100,6 +106,27 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+#Authentication backends for allauth
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+#Configuration for allauth
+ACCOUNT_EMAIL_REQUIRED = True
+
+ACCOUNT_USERNAME_REQUIRED = True
+
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+
+ACCOUNT_LOGIN_METHODS = {'email'}
+
+LOGIN_REDIRECT_URL = '/profile/'
+
+LOGOUT_REDIRECT_URL = '/'
+
+SOCIALACCOUNT_LOGIN_ON_GET = True
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
@@ -123,3 +150,12 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 #Login redirect
 LOGIN_URL = '/login/'
+
+#add site id for allauth
+SITE_ID = 1
+
+#Connecting to the custom form for allauth
+ACCOUNT_FORMS = {
+
+    'signup': 'accounts.forms.CustomSignupForm',
+}

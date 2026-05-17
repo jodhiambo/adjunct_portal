@@ -4,17 +4,34 @@
 
 <div class="text-center">
 
-    <h1>
+    <h1 class="mb-4">
         Welcome {{ request.user.username }}
     </h1>
 
-    <p>
-        You are successfully logged in.
-    </p>
+    <div class="d-grid gap-3 col-md-4 mx-auto">
 
-    <a href="/logout/" class="btn btn-danger">
-        Logout
-    </a>
+        <a href="/profile/"
+           class="btn btn-primary">
+
+           My Profile
+
+        </a>
+
+        <a href="/edit-profile/"
+           class="btn btn-success">
+
+           Edit Profile
+
+        </a>
+
+        <a href="/logout/"
+           class="btn btn-danger">
+
+           Logout
+
+        </a>
+
+    </div>
 
 </div>
 

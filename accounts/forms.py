@@ -1,6 +1,7 @@
 from django import forms
 from .models import ResearcherProfile
 from .models import Publication
+from allauth.account.forms import SignupForm
 
 try:
     from ckeditor.widgets import CKEditorWidget
