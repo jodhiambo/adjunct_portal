@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Upload Proposal Document</h2>
+    <p class="text-muted">For: {{ research.title }}</p>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Submit for Review</button>
+    </form>
+</div>
+{% endblock %}

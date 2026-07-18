@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'accounts',
+    'research',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -159,3 +160,5 @@ ACCOUNT_FORMS = {
 
     'signup': 'accounts.forms.CustomSignupForm',
 }
+#Email backend configuration for development
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

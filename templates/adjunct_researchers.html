@@ -2,82 +2,125 @@
 
 {% block content %}
 
-<h2 class="mb-4 text-center">
-    AICAD Adjunct Researchers Directory
-</h2>
+<div class="container py-5">
 
-<!-- SEARCH FORM -->
+    <!-- Hero Section -->
+    <div class="text-center mb-5">
 
-<form method="GET"
-      class="mb-5">
+        <h1 class="fw-bold display-6">
+            AICAD Adjunct Researchers Directory
+        </h1>
 
-    <div class="row justify-content-center">
+        <p class="text-muted lead">
+            Discover researchers, explore their expertise, publications and institutions.
+        </p>
 
-        <div class="col-md-8">
+    </div>
 
-            <div class="input-group">
+    <!-- Search Card -->
+    <div class="card border-0 shadow-sm rounded-4 mb-5">
 
-                <input
-                    type="text"
-                    name="q"
-                    class="form-control"
-                    placeholder="Search by researcher, research area, institution, or publication..."
-                    value="{{ query|default:'' }}"
-                >
+        <div class="card-body p-4">
 
-                <button class="btn btn-success">
+            <form method="GET">
 
-                    Search
+                <div class="input-group input-group-lg">
 
-                </button>
+                    <span class="input-group-text bg-white border-end-0">
 
-            </div>
+                        <i class="bi bi-search"></i>
+
+                    </span>
+
+                    <input
+                        type="text"
+                        name="q"
+                        class="form-control border-start-0"
+                        placeholder="Search by researcher, institution, research area or publication..."
+                        value="{{ query|default:'' }}"
+                    >
+
+                    <button class="btn btn-success px-4">
+
+                        <i class="bi bi-search me-1"></i>
+
+                        Search
+
+                    </button>
+
+                </div>
+
+            </form>
 
         </div>
 
     </div>
 
-</form>
+    <!-- Researchers -->
 
-<!-- RESEARCHER CARDS -->
+    <div class="row g-4">
 
-<div class="row">
+        {% for researcher in researchers %}
 
-    {% for researcher in researchers %}
+        <div class="col-lg-4 col-md-6">
 
-        <div class="col-md-4 mb-4">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
 
-            <div class="card shadow h-100">
-
-                <div class="card-body text-center">
+                <div class="card-body text-center p-4">
 
                     {% if researcher.profile_picture %}
 
                         <img src="{{ researcher.profile_picture.url }}"
+                             class="rounded-circle shadow mb-3"
                              width="120"
                              height="120"
-                             class="rounded-circle mb-3">
+                             style="object-fit:cover;">
+
+                    {% else %}
+
+                        <div class="rounded-circle bg-light d-inline-flex justify-content-center align-items-center shadow mb-3"
+                             style="width:120px;height:120px;">
+
+                            <i class="bi bi-person-fill fs-1 text-secondary"></i>
+
+                        </div>
 
                     {% endif %}
 
-                    <h4>
+                    <h4 class="fw-bold mb-1">
+
                         {{ researcher.user.username }}
+
                     </h4>
 
-                    <p>
+                    <span class="badge bg-primary mb-3">
+
                         {{ researcher.research_area }}
-                    </p>
 
-                    <p>
+                    </span>
+
+                    <p class="text-muted mb-3">
+
+                        <i class="bi bi-building"></i>
+
                         {{ researcher.institution }}
+
                     </p>
 
-                    <a href="/researcher/{{ researcher.id }}/"
-                       class="btn btn-success">
+                    <hr>
 
-                        View Profile
+                    <div class="d-grid">
 
-                    </a>
+                        <a href="/researcher/{{ researcher.id }}/"
+                           class="btn btn-success">
+
+                            <i class="bi bi-person-lines-fill me-2"></i>
+
+                            View Profile
+
+                        </a>
+
+                    </div>
 
                 </div>
 
@@ -85,97 +128,113 @@
 
         </div>
 
-    {% empty %}
+        {% empty %}
 
         <div class="col-12">
 
-            <div class="alert alert-warning text-center">
+            <div class="card border-0 shadow-sm">
 
-                No researchers found.
+                <div class="card-body text-center py-5">
+
+                    <i class="bi bi-search display-3 text-muted"></i>
+
+                    <h3 class="mt-3">
+
+                        No Researchers Found
+
+                    </h3>
+
+                    <p class="text-muted">
+
+                        Try searching with different keywords.
+
+                    </p>
+
+                </div>
 
             </div>
 
         </div>
 
-    {% endfor %}
+        {% endfor %}
 
-</div>
+    </div>
 
-<!-- PAGINATION -->
+    <!-- Pagination -->
 
-<nav class="mt-5">
+    {% if researchers.has_other_pages %}
 
-    <ul class="pagination justify-content-center">
+    <nav class="mt-5">
 
-        <!-- PREVIOUS -->
+        <ul class="pagination justify-content-center">
 
-        {% if researchers.has_previous %}
+            {% if researchers.has_previous %}
 
             <li class="page-item">
 
                 <a class="page-link"
-                   href="?page={{ researchers.previous_page_number }}">
+                   href="?q={{ query }}&page={{ researchers.previous_page_number }}">
 
-                    Previous
+                    <i class="bi bi-chevron-left"></i>
 
                 </a>
 
             </li>
-
-        {% endif %}
-
-        <!-- PAGE NUMBERS -->
-
-        {% for num in researchers.paginator.page_range %}
-
-            {% if researchers.number == num %}
-
-                <li class="page-item active">
-
-                    <span class="page-link">
-
-                        {{ num }}
-
-                    </span>
-
-                </li>
-
-            {% else %}
-
-                <li class="page-item">
-
-                    <a class="page-link"
-                       href="?page={{ num }}">
-
-                        {{ num }}
-
-                    </a>
-
-                </li>
 
             {% endif %}
 
-        {% endfor %}
+            {% for num in researchers.paginator.page_range %}
 
-        <!-- NEXT -->
+                {% if researchers.number == num %}
 
-        {% if researchers.has_next %}
+                    <li class="page-item active">
+
+                        <span class="page-link">
+
+                            {{ num }}
+
+                        </span>
+
+                    </li>
+
+                {% else %}
+
+                    <li class="page-item">
+
+                        <a class="page-link"
+                           href="?q={{ query }}&page={{ num }}">
+
+                            {{ num }}
+
+                        </a>
+
+                    </li>
+
+                {% endif %}
+
+            {% endfor %}
+
+            {% if researchers.has_next %}
 
             <li class="page-item">
 
                 <a class="page-link"
-                   href="?page={{ researchers.next_page_number }}">
+                   href="?q={{ query }}&page={{ researchers.next_page_number }}">
 
-                    Next
+                    <i class="bi bi-chevron-right"></i>
 
                 </a>
 
             </li>
 
-        {% endif %}
+            {% endif %}
 
-    </ul>
+        </ul>
 
-</nav>
+    </nav>
+
+    {% endif %}
+
+</div>
 
 {% endblock %}

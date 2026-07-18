@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container py-4">
+
+    <!-- Header -->
+
+    <div class="card shadow-sm border-0 mb-4">
+
+        <div class="card-body">
+
+            <h2 class="fw-bold mb-1">
+
+                <i class="bi bi-journal-plus text-primary me-2"></i>
+
+                {% if form.instance.pk %}
+                    Edit Research Entry
+                {% else %}
+                    New Research Entry
+                {% endif %}
+
+            </h2>
+
+            <p class="text-muted mb-0">
+
+                Complete the information below and submit your research proposal for review.
+
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <form method="post">
+
+        {% csrf_token %}
+
+        <!-- Research Information -->
+
+        <div class="card shadow-sm border-0 mb-4">
+
+            <div class="card-header bg-white">
+
+                <h5 class="mb-0">
+
+                    <i class="bi bi-file-earmark-text text-primary me-2"></i>
+
+                    Research Information
+
+                </h5>
+
+            </div>
+
+            <div class="card-body">
+
+                {{ form.as_p }}
+
+            </div>
+
+        </div>
+
+
+        <!-- Funding -->
+
+        <div class="card shadow-sm border-0 mb-4">
+
+            <div class="card-header bg-white">
+
+                <h5 class="mb-0">
+
+                    <i class="bi bi-cash-coin text-success me-2"></i>
+
+                    Funding Information
+
+                </h5>
+
+            </div>
+
+            <div class="card-body">
+
+                {{ funding_formset.management_form }}
+
+                {% for f in funding_formset %}
+
+                    <div class="border rounded-3 p-3 mb-3 bg-light">
+
+                        <h6 class="text-primary mb-3">
+
+                            <i class="bi bi-wallet2 me-1"></i>
+
+                            Funding Source {{ forloop.counter }}
+
+                        </h6>
+
+                        {{ f.as_p }}
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+
+        <!-- Buttons -->
+
+        <div class="card shadow-sm border-0">
+
+            <div class="card-body">
+
+                <div class="d-flex justify-content-end gap-2">
+
+                    <a href="javascript:history.back()"
+                       class="btn btn-outline-secondary">
+
+                        <i class="bi bi-arrow-left me-1"></i>
+
+                        Cancel
+
+                    </a>
+
+                    <button type="submit"
+                            class="btn btn-primary">
+
+                        <i class="bi bi-send-check me-1"></i>
+
+                        Submit for Review
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </form>
+
+</div>
+
+<style>
+
+.card{
+    border-radius:12px;
+}
+
+.card-header{
+    background:#fff;
+    border-bottom:1px solid #f1f1f1;
+    padding:1rem 1.25rem;
+}
+
+input,
+textarea,
+select{
+
+    border-radius:8px !important;
+
+}
+
+textarea{
+
+    min-height:140px;
+
+}
+
+.border.rounded-3{
+
+    transition:.3s;
+
+}
+
+.border.rounded-3:hover{
+
+    background:#ffffff !important;
+    box-shadow:0 6px 20px rgba(0,0,0,.08);
+
+}
+
+label{
+
+    font-weight:600;
+    margin-bottom:.35rem;
+
+}
+
+</style>
+
+{% endblock %}

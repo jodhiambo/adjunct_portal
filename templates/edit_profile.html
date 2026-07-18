@@ -2,31 +2,76 @@
 
 {% block content %}
 
-<div class="row justify-content-center">
+<div class="container py-5">
 
-    <div class="col-md-8">
+    <div class="row justify-content-center">
 
-        <div class="card shadow">
+        <div class="col-lg-9 col-xl-8">
 
-            <div class="card-body">
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
 
-                <h2 class="mb-4">
-                    Edit Profile
-                </h2>
+                <!-- Header -->
+                <div class="card-header bg-primary text-white border-0 py-4">
 
-                <!-- for file uploads -->
-                <form method="POST"
-                      enctype="multipart/form-data"> 
+                    <div class="d-flex align-items-center">
 
-                    {% csrf_token %}
+                        <div class="bg-white text-primary rounded-circle d-flex justify-content-center align-items-center me-3"
+                             style="width:65px; height:65px;">
 
-                    {{ form.as_p }}
+                            <i class="bi bi-person-gear fs-2"></i>
 
-                    <button class="btn btn-primary">
-                        Save Changes
-                    </button>
+                        </div>
 
-                </form>
+                        <div>
+
+                            <h2 class="fw-bold mb-1">
+                                Edit Profile
+                            </h2>
+
+                            <p class="mb-0 text-white-50">
+                                Keep your researcher profile up to date.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- Form -->
+                <div class="card-body p-4 p-lg-5">
+
+                    <form method="POST" enctype="multipart/form-data">
+
+                        {% csrf_token %}
+
+                        {{ form.as_p }}
+
+                        <hr class="my-4">
+
+                        <div class="d-flex justify-content-between flex-wrap gap-2">
+
+                            <a href="javascript:history.back()"
+                               class="btn btn-outline-secondary">
+
+                                <i class="bi bi-arrow-left"></i>
+                                Back
+
+                            </a>
+
+                            <button type="submit"
+                                    class="btn btn-primary px-4">
+
+                                <i class="bi bi-check-circle"></i>
+                                Save Changes
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
 
             </div>
 
@@ -35,5 +80,41 @@
     </div>
 
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    // Style all form groups
+    document.querySelectorAll("form p").forEach(function(p){
+        p.classList.add("mb-4");
+    });
+
+    // Style labels
+    document.querySelectorAll("label").forEach(function(label){
+        label.classList.add("form-label", "fw-semibold", "mb-2");
+    });
+
+    // Style form controls
+    document.querySelectorAll("input, textarea, select").forEach(function(el){
+
+        if(el.tagName === "SELECT"){
+            el.classList.add("form-select");
+        }
+        else if(el.type === "checkbox"){
+            el.classList.add("form-check-input");
+        }
+        else{
+            el.classList.add("form-control");
+        }
+
+    });
+
+    // Make textareas taller
+    document.querySelectorAll("textarea").forEach(function(el){
+        el.rows = 5;
+    });
+
+});
+</script>
 
 {% endblock %}

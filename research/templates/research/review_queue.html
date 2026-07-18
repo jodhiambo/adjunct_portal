@@ -1,0 +1,305 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container py-4">
+
+    <!-- Header -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body">
+
+            <h2 class="fw-bold mb-1">
+                <i class="bi bi-clipboard-check text-primary me-2"></i>
+                Review Queue
+            </h2>
+
+            <p class="text-muted mb-0">
+                Review pending research submissions and proposal documents awaiting approval.
+            </p>
+
+        </div>
+    </div>
+
+
+    <!-- Pending Research -->
+
+    <div class="card shadow-sm border-0 mb-5">
+
+        <div class="card-header bg-white border-0 py-3">
+
+            <h4 class="mb-0">
+                <i class="bi bi-journal-richtext text-primary me-2"></i>
+                Pending Research Entries
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            {% for research in pending_research %}
+
+            <div class="card border-0 shadow-sm mb-4 review-card">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between align-items-start">
+
+                        <div>
+
+                            <h5 class="fw-bold mb-2">
+
+                                {{ research.title }}
+
+                            </h5>
+
+                            <span class="badge bg-warning text-dark rounded-pill">
+
+                                Awaiting Review
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <p class="mt-3 text-muted">
+
+                        {{ research.description|striptags|truncatewords:30 }}
+
+                    </p>
+
+                    <div class="mb-3">
+
+                        <small class="text-muted">
+
+                            <i class="bi bi-person-fill me-1"></i>
+
+                            Submitted by
+
+                            <strong>{{ research.created_by.username }}</strong>
+
+                        </small>
+
+                    </div>
+
+                    <hr>
+
+                    <form method="post"
+                          action="{% url 'review_research_action' research.pk %}">
+
+                        {% csrf_token %}
+
+                        {{ review_form.as_p }}
+
+                        <div class="text-end">
+
+                            <button type="submit"
+                                    class="btn btn-success">
+
+                                <i class="bi bi-check-circle me-1"></i>
+
+                                Submit Review
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+            {% empty %}
+
+            <div class="text-center py-5">
+
+                <i class="bi bi-check2-circle display-4 text-success"></i>
+
+                <h5 class="mt-3">
+
+                    No Pending Research Entries
+
+                </h5>
+
+                <p class="text-muted mb-0">
+
+                    All submitted research entries have been reviewed.
+
+                </p>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+
+
+    <!-- Pending Proposal Documents -->
+
+    <div class="card shadow-sm border-0">
+
+        <div class="card-header bg-white border-0 py-3">
+
+            <h4 class="mb-0">
+
+                <i class="bi bi-file-earmark-pdf text-danger me-2"></i>
+
+                Pending Proposal Documents
+
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            {% for proposal in pending_proposals %}
+
+            <div class="card border-0 shadow-sm mb-4 review-card">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between align-items-start">
+
+                        <div>
+
+                            <h5 class="fw-bold">
+
+                                {{ proposal.topic }}
+
+                            </h5>
+
+                            <span class="badge bg-warning text-dark rounded-pill">
+
+                                Awaiting Review
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <p class="mt-3 mb-2">
+
+                        <strong>Research Project:</strong>
+
+                        {{ proposal.research.title }}
+
+                    </p>
+
+                    <p class="mb-3">
+
+                        <a href="{{ proposal.document.url }}"
+                           target="_blank"
+                           class="btn btn-outline-primary btn-sm">
+
+                            <i class="bi bi-file-earmark-pdf me-1"></i>
+
+                            View Proposal Document
+
+                        </a>
+
+                    </p>
+
+                    <small class="text-muted">
+
+                        <i class="bi bi-person-fill me-1"></i>
+
+                        Uploaded by
+
+                        <strong>{{ proposal.uploaded_by.username }}</strong>
+
+                    </small>
+
+                    <hr>
+
+                    <form method="post"
+                          action="{% url 'review_proposal_action' proposal.pk %}">
+
+                        {% csrf_token %}
+
+                        {{ review_form.as_p }}
+
+                        <div class="text-end">
+
+                            <button type="submit"
+                                    class="btn btn-success">
+
+                                <i class="bi bi-check-circle me-1"></i>
+
+                                Submit Review
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+            {% empty %}
+
+            <div class="text-center py-5">
+
+                <i class="bi bi-check2-circle display-4 text-success"></i>
+
+                <h5 class="mt-3">
+
+                    No Pending Proposal Documents
+
+                </h5>
+
+                <p class="text-muted mb-0">
+
+                    There are currently no proposal documents awaiting review.
+
+                </p>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</div>
+
+<style>
+
+.review-card{
+    transition:all .3s ease;
+    border-radius:12px;
+}
+
+.review-card:hover{
+    transform:translateY(-4px);
+    box-shadow:0 12px 30px rgba(0,0,0,.12)!important;
+}
+
+.card{
+    border-radius:12px;
+}
+
+.card-header{
+    border-bottom:1px solid #f1f1f1;
+}
+
+.badge{
+    font-size:.8rem;
+    padding:.55rem .8rem;
+}
+
+textarea,
+select,
+input{
+    border-radius:8px !important;
+}
+
+</style>
+
+{% endblock %}

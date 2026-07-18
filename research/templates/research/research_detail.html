@@ -1,0 +1,404 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container py-4">
+
+    <!-- Header -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body">
+
+            <div class="d-flex justify-content-between align-items-start flex-wrap">
+
+                <div>
+                    <h2 class="fw-bold mb-2">
+                        <i class="bi bi-journal-richtext text-primary me-2"></i>
+                        {{ research.title }}
+                    </h2>
+
+                    <div class="d-flex gap-2 flex-wrap">
+
+                        <span class="badge rounded-pill bg-success px-3 py-2">
+                            {{ research.get_status_display }}
+                        </span>
+
+                        {% if is_owner_or_staff %}
+                        <span class="badge rounded-pill bg-warning text-dark px-3 py-2">
+                            Review: {{ research.get_review_status_display }}
+                        </span>
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+                {% if is_owner_or_staff %}
+                <div class="mt-3 mt-md-0">
+
+                    <a href="{% url 'research_edit' research.pk %}"
+                       class="btn btn-outline-primary">
+
+                        <i class="bi bi-pencil-square"></i>
+                        Edit
+                    </a>
+
+                    <a href="{% url 'proposal_upload' research.pk %}"
+                       class="btn btn-primary">
+
+                        <i class="bi bi-upload"></i>
+                        Upload Proposal
+                    </a>
+
+                </div>
+                {% endif %}
+
+            </div>
+
+        </div>
+    </div>
+
+
+
+    <div class="row">
+
+        <!-- LEFT COLUMN -->
+        <div class="col-lg-8">
+
+            <!-- Description -->
+            <div class="card shadow-sm border-0 mb-4">
+
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-file-earmark-text"></i>
+                        Research Description
+                    </h5>
+                </div>
+
+                <div class="card-body">
+
+                    {{ research.description|safe }}
+
+                </div>
+
+            </div>
+
+
+
+            <!-- Proposal Documents -->
+
+            <div class="card shadow-sm border-0 mb-4">
+
+                <div class="card-header bg-white">
+
+                    <h5 class="mb-0">
+                        <i class="bi bi-folder2-open"></i>
+                        Proposal Documents
+                    </h5>
+
+                </div>
+
+                <div class="card-body">
+
+                    {% for doc in proposal_documents %}
+
+                        <div class="d-flex justify-content-between align-items-center border-bottom py-3">
+
+                            <div>
+
+                                <i class="bi bi-file-earmark-pdf text-danger me-2"></i>
+
+                                <a href="{{ doc.document.url }}" target="_blank">
+
+                                    {{ doc.topic }}
+
+                                </a>
+
+                            </div>
+
+                            {% if is_owner_or_staff %}
+
+                            <span class="badge bg-secondary">
+
+                                {{ doc.get_review_status_display }}
+
+                            </span>
+
+                            {% endif %}
+
+                        </div>
+
+                    {% empty %}
+
+                        <div class="text-center text-muted py-4">
+
+                            <i class="bi bi-folder-x display-5"></i>
+
+                            <p class="mt-3">
+                                No proposal documents uploaded.
+                            </p>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+
+
+            <!-- Comments -->
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-header bg-white">
+
+                    <h5 class="mb-0">
+
+                        <i class="bi bi-chat-left-text"></i>
+
+                        Discussion
+
+                    </h5>
+
+                </div>
+
+                <div class="card-body">
+
+                    {% for comment in research.comments.all %}
+
+                    <div class="border-start border-4 border-primary ps-3 mb-4">
+
+                        <div class="fw-bold">
+
+                            {{ comment.user.username }}
+
+                        </div>
+
+                        <small class="text-muted">
+
+                            {{ comment.created_at|date:"M d, Y • H:i" }}
+
+                        </small>
+
+                        <div class="mt-2">
+
+                            {{ comment.text }}
+
+                        </div>
+
+                    </div>
+
+                    {% empty %}
+
+                    <div class="text-center text-muted">
+
+                        <i class="bi bi-chat-square-dots display-6"></i>
+
+                        <p>No comments yet.</p>
+
+                    </div>
+
+                    {% endfor %}
+
+                    <hr>
+
+                    <form method="post">
+
+                        {% csrf_token %}
+
+                        {{ comment_form.as_p }}
+
+                        <button class="btn btn-primary">
+
+                            <i class="bi bi-send"></i>
+
+                            Post Comment
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- RIGHT COLUMN -->
+
+        <div class="col-lg-4">
+
+            <!-- Research Team -->
+
+            <div class="card shadow-sm border-0 mb-4">
+
+                <div class="card-header bg-white">
+
+                    <h5 class="mb-0">
+
+                        <i class="bi bi-people"></i>
+
+                        Research Team
+
+                    </h5>
+
+                </div>
+
+                <div class="card-body">
+
+                    {% for r in research.researchers.all %}
+
+                    <div class="d-flex align-items-center mb-3">
+
+                        <div class="rounded-circle bg-primary text-white d-flex justify-content-center align-items-center"
+
+                             style="width:45px;height:45px;">
+
+                            {{ r.user.username|first|upper }}
+
+                        </div>
+
+                        <div class="ms-3">
+
+                            <div class="fw-semibold">
+
+                                {{ r.user.username }}
+
+                            </div>
+
+                            <small class="text-muted">
+
+                                {{ r.institution }}
+
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                    {% endfor %}
+
+                    {% for ec in research.external_collaborators.all %}
+
+                    <div class="d-flex align-items-center mb-3">
+
+                        <div class="rounded-circle bg-secondary text-white d-flex justify-content-center align-items-center"
+
+                             style="width:45px;height:45px;">
+
+                            {{ ec.name|first|upper }}
+
+                        </div>
+
+                        <div class="ms-3">
+
+                            <div>{{ ec.name }}</div>
+
+                            <small class="text-muted">
+
+                                External Collaborator
+
+                            </small>
+
+                            <br>
+
+                            <small>{{ ec.email }}</small>
+
+                        </div>
+
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+
+
+            <!-- Funding -->
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-header bg-white">
+
+                    <h5 class="mb-0">
+
+                        <i class="bi bi-cash-stack"></i>
+
+                        Funding
+
+                    </h5>
+
+                </div>
+
+                <div class="card-body">
+
+                    {% for funding in research.funding_set.all %}
+
+                    <div class="mb-3">
+
+                        <strong>
+
+                            {{ funding.donor.name }}
+
+                        </strong>
+
+                        <div class="text-success">
+
+                            {{ funding.amount_min }}
+
+                            -
+
+                            {{ funding.amount_max }}
+
+                        </div>
+
+                    </div>
+
+                    {% empty %}
+
+                    <div class="text-muted">
+
+                        No funding information.
+
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+
+
+            {% if research.review_status == 'needs_revision' or research.review_status == 'flagged' %}
+            {% if is_owner_or_staff %}
+
+            <div class="alert alert-warning mt-4 shadow-sm">
+
+                <h6>
+
+                    <i class="bi bi-exclamation-triangle"></i>
+
+                    Reviewer Feedback
+
+                </h6>
+
+                {{ research.review_comment }}
+
+            </div>
+
+            {% endif %}
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

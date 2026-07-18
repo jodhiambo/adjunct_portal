@@ -2,29 +2,92 @@
 
 {% block content %}
 
-<div class="row justify-content-center">
+<div class="container py-5">
 
-    <div class="col-md-8">
+    <div class="row justify-content-center">
 
-        <div class="card shadow">
+        <div class="col-lg-9 col-xl-8">
 
-            <div class="card-body">
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
 
-                <h2 class="mb-4">
-                    Adjunct Research Application
-                </h2>
+                <!-- Header -->
+                <div class="card-header bg-success text-white border-0 py-4">
 
-                <form method="POST">
+                    <div class="d-flex align-items-center">
 
-                    {% csrf_token %}
+                        <div class="bg-white text-success rounded-circle d-flex align-items-center justify-content-center me-3"
+                             style="width:65px; height:65px;">
 
-                    {{ form.as_p }}
+                            <i class="bi bi-file-earmark-check fs-2"></i>
 
-                    <button class="btn btn-primary">
-                        Submit Application
-                    </button>
+                        </div>
 
-                </form>
+                        <div>
+
+                            <h2 class="fw-bold mb-1">
+                                Adjunct Research Application
+                            </h2>
+
+                            <p class="mb-0 text-white-50">
+                                Complete the application form to apply as an Adjunct Researcher with AICAD.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- Body -->
+                <div class="card-body p-4 p-lg-5">
+
+                    <!-- Information Alert -->
+                    <div class="alert alert-light border-start border-4 border-success mb-4">
+
+                        <h6 class="fw-bold mb-2">
+                            <i class="bi bi-info-circle-fill text-success me-2"></i>
+                            Before You Submit
+                        </h6>
+
+                        <ul class="mb-0">
+                            <li>Ensure all required fields are completed accurately.</li>
+                            <li>Provide up-to-date professional and research information.</li>
+                            <li>Your application will be reviewed by the AICAD Secretariat.</li>
+                        </ul>
+
+                    </div>
+
+                    <form method="POST">
+
+                        {% csrf_token %}
+
+                        {{ form.as_p }}
+
+                        <hr class="my-4">
+
+                        <div class="d-flex justify-content-between flex-wrap gap-2">
+
+                            <a href="javascript:history.back()"
+                               class="btn btn-outline-secondary">
+
+                                <i class="bi bi-arrow-left"></i>
+                                Back
+
+                            </a>
+
+                            <button type="submit"
+                                    class="btn btn-success px-4">
+
+                                <i class="bi bi-send-check"></i>
+                                Submit Application
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
 
             </div>
 
@@ -33,5 +96,41 @@
     </div>
 
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    // Style form groups
+    document.querySelectorAll("form p").forEach(function(p){
+        p.classList.add("mb-4");
+    });
+
+    // Style labels
+    document.querySelectorAll("label").forEach(function(label){
+        label.classList.add("form-label", "fw-semibold", "mb-2");
+    });
+
+    // Style inputs
+    document.querySelectorAll("input, textarea, select").forEach(function(el){
+
+        if(el.tagName === "SELECT"){
+            el.classList.add("form-select");
+        }
+        else if(el.type === "checkbox"){
+            el.classList.add("form-check-input");
+        }
+        else{
+            el.classList.add("form-control");
+        }
+
+    });
+
+    // Make textareas taller
+    document.querySelectorAll("textarea").forEach(function(el){
+        el.rows = 5;
+    });
+
+});
+</script>
 
 {% endblock %}

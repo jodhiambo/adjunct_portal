@@ -2,59 +2,236 @@
 
 {% block content %}
 
-<div class="row justify-content-center">
+<style>
+    body {
+        background: linear-gradient(135deg,#f5f6f8, #e4e9e4);
+    }
 
-    <div class="col-md-5">
+    .auth-container {
+        min-height: calc(100vh - 80px);
+    }
 
-        <div class="card shadow">
+    .signup-card {
+        border: none;
+        border-radius: 1rem;
+        overflow: hidden;
+        box-shadow: 0 1rem 3rem rgba(0,0,0,.15);
+    }
 
-            <div class="card-body">
+    .signup-header {
+        background: linear-gradient(135deg,#198754,#157347);
+        color: #fff;
+    }
 
-                <h3 class="mb-4 text-center">
-                    Signup
+    .signup-header .icon {
+        font-size: 3.5rem;
+    }
+
+    .input-group-text {
+        background: #fff;
+        border-right: 0;
+    }
+
+    .form-control {
+        border-left: 0;
+    }
+
+    .form-control:focus {
+        box-shadow: none;
+        border-color: #198754;
+    }
+
+    .btn-register {
+        border-radius: .7rem;
+        padding: .75rem;
+        font-weight: 600;
+    }
+
+    .password-strength {
+        height: 6px;
+        border-radius: 5px;
+        background: #e9ecef;
+        overflow: hidden;
+    }
+
+    .password-strength span {
+        display: block;
+        height: 100%;
+        width: 0%;
+        transition: .3s;
+    }
+
+    .card-footer {
+        background: transparent;
+    }
+</style>
+
+<div class="container auth-container d-flex align-items-center justify-content-center">
+
+    <div class="col-lg-6 col-md-8">
+
+        <div class="card signup-card">
+
+            <div class="signup-header text-center py-4">
+
+                <i class="bi bi-person-plus-fill icon"></i>
+
+                <h3 class="mt-2 mb-1">
+                    Create Account
                 </h3>
+
+                <p class="mb-0 opacity-75">
+                    Register to access the Adjunct Research Portal
+                </p>
+
+            </div>
+
+            <div class="card-body p-4">
 
                 <form method="POST">
 
                     {% csrf_token %}
 
                     <div class="mb-3">
-                        <label>Username</label>
 
-                        <input type="text"
-                               name="username"
-                               class="form-control"
-                               required>
+                        <label class="form-label fw-semibold">
+                            Username
+                        </label>
+
+                        <div class="input-group">
+
+                            <span class="input-group-text">
+                                <i class="bi bi-person"></i>
+                            </span>
+
+                            <input
+                                type="text"
+                                name="username"
+                                class="form-control"
+                                placeholder="Choose a username"
+                                required>
+
+                        </div>
+
                     </div>
 
                     <div class="mb-3">
-                        <label>Email</label>
 
-                        <input type="email"
-                               name="email"
-                               class="form-control"
-                               required>
+                        <label class="form-label fw-semibold">
+                            Email Address
+                        </label>
+
+                        <div class="input-group">
+
+                            <span class="input-group-text">
+                                <i class="bi bi-envelope"></i>
+                            </span>
+
+                            <input
+                                type="email"
+                                name="email"
+                                class="form-control"
+                                placeholder="Enter your email"
+                                required>
+
+                        </div>
+
                     </div>
 
                     <div class="mb-3">
-                        <label>Password</label>
 
-                        <input type="password"
-                               name="password"
-                               class="form-control"
-                               required>
+                        <label class="form-label fw-semibold">
+                            Password
+                        </label>
+
+                        <div class="input-group">
+
+                            <span class="input-group-text">
+                                <i class="bi bi-lock"></i>
+                            </span>
+
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                class="form-control"
+                                placeholder="Create a password"
+                                onkeyup="checkStrength()"
+                                required>
+
+                            <button
+                                class="btn btn-outline-secondary"
+                                type="button"
+                                onclick="togglePassword('password','eye1')">
+
+                                <i class="bi bi-eye" id="eye1"></i>
+
+                            </button>
+
+                        </div>
+
+                        <div class="password-strength mt-2">
+                            <span id="strengthBar"></span>
+                        </div>
+
+                        <small id="strengthText" class="text-muted"></small>
+
                     </div>
 
-                    <button class="btn btn-primary w-100">
+                    <div class="mb-4">
+
+                        <label class="form-label fw-semibold">
+                            Confirm Password
+                        </label>
+
+                        <div class="input-group">
+
+                            <span class="input-group-text">
+                                <i class="bi bi-shield-lock"></i>
+                            </span>
+
+                            <input
+                                type="password"
+                                id="confirm_password"
+                                name="confirm_password"
+                                class="form-control"
+                                placeholder="Confirm your password"
+                                required>
+
+                            <button
+                                class="btn btn-outline-secondary"
+                                type="button"
+                                onclick="togglePassword('confirm_password','eye2')">
+
+                                <i class="bi bi-eye" id="eye2"></i>
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    <button class="btn btn-success btn-register w-100">
+
+                        <i class="bi bi-person-check-fill me-2"></i>
+
                         Create Account
+
                     </button>
 
                 </form>
 
-                <p class="mt-3 text-center">
-                    Already have an account?
-                    <a href="/login/">Login</a>
-                </p>
+            </div>
+
+            <div class="card-footer text-center py-3">
+
+                Already have an account?
+
+                <a href="/login/" class="fw-semibold text-decoration-none">
+
+                    Sign In
+
+                </a>
 
             </div>
 
@@ -63,5 +240,70 @@
     </div>
 
 </div>
+
+<script>
+
+function togglePassword(fieldId, iconId){
+
+    const field = document.getElementById(fieldId);
+    const icon = document.getElementById(iconId);
+
+    if(field.type === "password"){
+        field.type = "text";
+        icon.classList.replace("bi-eye","bi-eye-slash");
+    }else{
+        field.type = "password";
+        icon.classList.replace("bi-eye-slash","bi-eye");
+    }
+
+}
+
+function checkStrength(){
+
+    const password = document.getElementById("password").value;
+    const bar = document.getElementById("strengthBar");
+    const text = document.getElementById("strengthText");
+
+    let strength = 0;
+
+    if(password.length >= 8) strength++;
+    if(/[A-Z]/.test(password)) strength++;
+    if(/[0-9]/.test(password)) strength++;
+    if(/[!@#$%^&*]/.test(password)) strength++;
+
+    switch(strength){
+
+        case 1:
+            bar.style.width = "25%";
+            bar.style.background = "#dc3545";
+            text.innerHTML = "Weak password";
+            break;
+
+        case 2:
+            bar.style.width = "50%";
+            bar.style.background = "#ffc107";
+            text.innerHTML = "Fair password";
+            break;
+
+        case 3:
+            bar.style.width = "75%";
+            bar.style.background = "#0dcaf0";
+            text.innerHTML = "Good password";
+            break;
+
+        case 4:
+            bar.style.width = "100%";
+            bar.style.background = "#198754";
+            text.innerHTML = "Strong password";
+            break;
+
+        default:
+            bar.style.width = "0";
+            text.innerHTML = "";
+    }
+
+}
+
+</script>
 
 {% endblock %}

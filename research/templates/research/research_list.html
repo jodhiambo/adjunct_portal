@@ -1,0 +1,206 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container py-4">
+
+    <!-- Page Header -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body d-flex justify-content-between align-items-center flex-wrap">
+
+            <div>
+                <h2 class="fw-bold mb-1">
+                    <i class="bi bi-journal-richtext text-primary me-2"></i>
+                    Research Works
+                </h2>
+                <p class="text-muted mb-0">
+                    Browse and manage research projects.
+                </p>
+            </div>
+
+            <a href="{% url 'research_create' %}" class="btn btn-primary mt-3 mt-md-0">
+                <i class="bi bi-plus-circle me-1"></i>
+                New Research Entry
+            </a>
+
+        </div>
+    </div>
+
+    <!-- Status Filters -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body">
+
+            <div class="d-flex flex-wrap gap-2">
+
+                <a href="{% url 'research_list' %}"
+                   class="btn btn-outline-primary rounded-pill">
+                    All
+                </a>
+
+                <a href="?status=applied"
+                   class="btn btn-outline-secondary rounded-pill">
+                    Applied
+                </a>
+
+                <a href="?status=won"
+                   class="btn btn-outline-success rounded-pill">
+                    Won
+                </a>
+
+                <a href="?status=ongoing"
+                   class="btn btn-outline-warning rounded-pill">
+                    Ongoing
+                </a>
+
+                <a href="?status=completed"
+                   class="btn btn-outline-info rounded-pill">
+                    Completed
+                </a>
+
+            </div>
+
+        </div>
+    </div>
+
+    {% if researches %}
+
+    <div class="row g-4">
+
+        {% for research in researches %}
+
+        <div class="col-lg-6">
+
+            <div class="card h-100 border-0 shadow-sm research-card">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+
+                        <h5 class="fw-bold mb-0">
+                            {{ research.title }}
+                        </h5>
+
+                        <span class="badge bg-info text-dark rounded-pill px-3 py-2">
+                            {{ research.get_status_display }}
+                        </span>
+
+                    </div>
+
+                    <p class="text-muted">
+
+                        {{ research.description|striptags|truncatewords:20 }}
+
+                    </p>
+
+                    <hr>
+
+                    <div class="small text-muted mb-3">
+
+                        <i class="bi bi-people-fill me-1 text-primary"></i>
+
+                        <strong>Research Team</strong>
+
+                        <div class="mt-2">
+
+                            {% for r in research.researchers.all %}
+
+                                <span class="badge bg-light text-dark border me-1 mb-1">
+                                    {{ r.user.username }}
+                                </span>
+
+                            {% empty %}
+
+                                <span class="text-muted">
+                                    No researchers assigned
+                                </span>
+
+                            {% endfor %}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="card-footer bg-white border-0">
+
+                    <div class="d-grid">
+
+                        <a href="{% url 'research_detail' research.pk %}"
+                           class="btn btn-outline-primary">
+
+                            <i class="bi bi-eye me-1"></i>
+
+                            View Details
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+
+    <div class="card shadow-sm border-0">
+
+        <div class="card-body text-center py-5">
+
+            <i class="bi bi-folder-x display-3 text-secondary mb-3"></i>
+
+            <h4>No Research Entries Yet</h4>
+
+            <p class="text-muted">
+                There are currently no research works available.
+            </p>
+
+            <a href="{% url 'research_create' %}"
+               class="btn btn-primary">
+
+                <i class="bi bi-plus-circle me-1"></i>
+
+                Create First Research
+
+            </a>
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+<style>
+
+.research-card{
+    transition:all .3s ease;
+    border-radius:12px;
+}
+
+.research-card:hover{
+    transform:translateY(-5px);
+    box-shadow:0 12px 30px rgba(0,0,0,.15)!important;
+}
+
+.card{
+    border-radius:12px;
+}
+
+.badge{
+    font-weight:500;
+}
+
+.card-footer{
+    padding-top:0;
+}
+
+</style>
+
+{% endblock %}

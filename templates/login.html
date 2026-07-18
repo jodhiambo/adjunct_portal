@@ -2,17 +2,75 @@
 
 {% block content %}
 
-<div class="row justify-content-center">
+<style>
+    body {
+        background: linear-gradient(135deg, #f5f6f8, #e4e9e4);
+    }
 
-    <div class="col-md-5">
+    .auth-container {
+        min-height: calc(100vh - 80px);
+    }
 
-        <div class="card shadow">
+    .login-card {
+        border: none;
+        border-radius: 1rem;
+        overflow: hidden;
+        box-shadow: 0 1rem 3rem rgba(0,0,0,.15);
+    }
 
-            <div class="card-body">
+    .login-header {
+        background: linear-gradient(135deg,#198754,#157347);
+        color: #fff;
+    }
 
-                <h3 class="mb-4 text-center">
-                    Login
-                </h3>
+    .login-header .icon {
+        font-size: 3.5rem;
+    }
+
+    .form-control {
+        border-left: 0;
+    }
+
+    .input-group-text {
+        background: #fff;
+        border-right: 0;
+    }
+
+    .form-control:focus {
+        box-shadow: none;
+        border-color: #198754;
+    }
+
+    .btn-login {
+        border-radius: .7rem;
+        padding: .75rem;
+        font-weight: 600;
+    }
+
+    .card-footer {
+        background: transparent;
+    }
+</style>
+
+<div class="container auth-container d-flex align-items-center justify-content-center">
+
+    <div class="col-lg-5 col-md-7">
+
+        <div class="card login-card">
+
+            <div class="login-header text-center py-4">
+
+                <i class="bi bi-person-circle icon"></i>
+
+                <h3 class="mt-2 mb-1">Welcome Back</h3>
+
+                <p class="mb-0 opacity-75">
+                    Sign in to continue
+                </p>
+
+            </div>
+
+            <div class="card-body p-4">
 
                 <form method="POST">
 
@@ -20,36 +78,111 @@
 
                     <div class="mb-3">
 
-                        <label>Username</label>
+                        <label class="form-label fw-semibold">
+                            Username
+                        </label>
 
-                        <input type="text"
-                               name="username"
-                               class="form-control"
-                               required>
+                        <div class="input-group">
+
+                            <span class="input-group-text">
+                                <i class="bi bi-person"></i>
+                            </span>
+
+                            <input
+                                type="text"
+                                name="username"
+                                class="form-control"
+                                placeholder="Enter username"
+                                required>
+
+                        </div>
 
                     </div>
 
                     <div class="mb-3">
 
-                        <label>Password</label>
+                        <label class="form-label fw-semibold">
+                            Password
+                        </label>
 
-                        <input type="password"
-                               name="password"
-                               class="form-control"
-                               required>
+                        <div class="input-group">
+
+                            <span class="input-group-text">
+                                <i class="bi bi-lock"></i>
+                            </span>
+
+                            <input
+                                type="password"
+                                class="form-control"
+                                id="password"
+                                name="password"
+                                placeholder="Enter password"
+                                required>
+
+                            <button
+                                class="btn btn-outline-secondary"
+                                type="button"
+                                onclick="togglePassword()">
+
+                                <i class="bi bi-eye" id="toggleIcon"></i>
+
+                            </button>
+
+                        </div>
 
                     </div>
 
-                    <button class="btn btn-success w-100">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+
+                        <div class="form-check">
+
+                            <input
+                                class="form-check-input"
+                                type="checkbox"
+                                id="remember">
+
+                            <label
+                                class="form-check-label"
+                                for="remember">
+
+                                Remember me
+
+                            </label>
+
+                        </div>
+
+                        <a
+                            href="{% url 'forgot_password' %}"
+                            class="text-decoration-none">
+
+                            Forgot Password?
+
+                        </a>
+
+                    </div>
+
+                    <button
+                        class="btn btn-success btn-login w-100">
+
+                        <i class="bi bi-box-arrow-in-right me-2"></i>
+
                         Login
+
                     </button>
 
                 </form>
 
-                <p class="mt-3 text-center">
-                    Don't have an account?
-                    <a href="/signup/">Signup</a>
-                </p>
+            </div>
+
+            <div class="card-footer text-center py-3">
+
+                Don't have an account?
+
+                <a href="/signup/" class="fw-semibold text-decoration-none">
+
+                    Create Account
+
+                </a>
 
             </div>
 
@@ -58,5 +191,20 @@
     </div>
 
 </div>
+
+<script>
+function togglePassword() {
+    const password = document.getElementById('password');
+    const icon = document.getElementById('toggleIcon');
+
+    if (password.type === 'password') {
+        password.type = 'text';
+        icon.classList.replace('bi-eye', 'bi-eye-slash');
+    } else {
+        password.type = 'password';
+        icon.classList.replace('bi-eye-slash', 'bi-eye');
+    }
+}
+</script>
 
 {% endblock %}

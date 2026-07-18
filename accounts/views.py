@@ -8,12 +8,23 @@ from .forms import (
     AdjunctApplicationForm,
     PublicationForm
 )
+
+#import utils for profile
+from .utils import get_or_create_profile
+
 #protecting view
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from .models import Publication
 from django.core.paginator import Paginator
+
+#for password reset
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_str
+from django.core.mail import send_mail
+from django.conf import settings
 
 
 def signup_view(request):
@@ -23,9 +34,18 @@ def signup_view(request):
         username = request.POST['username']
         email = request.POST['email']
         password = request.POST['password']
+        confirm_password = request.POST['confirm_password']
 
         if User.objects.filter(username=username).exists():
             messages.error(request, 'Username already exists')
+            return redirect('signup')
+        
+        if User.objects.filter(email=email).exists():
+            messages.error(request, 'Email already exists')
+            return redirect('signup')
+
+        if password != confirm_password:
+            messages.error(request, 'Passwords do not match')
             return redirect('signup')
 
         user = User.objects.create_user(
@@ -37,14 +57,7 @@ def signup_view(request):
         user.save()
 
         # create empty research profile for new user after signup
-        ResearcherProfile.objects.create(
-            user=user,
-            research_area='',
-            institution='', 
-            achievements='',
-            proposals_applied=0,
-            proposals_won=0,
-        )
+        get_or_create_profile(user)
 
         messages.success(request, 'Account created successfully')
 
@@ -56,10 +69,7 @@ def signup_view(request):
 @login_required
 def profile_view(request):
 
-    profile = ResearcherProfile.objects.get(
-        user=request.user
-    )
-
+    profile = get_or_create_profile(request.user)
     return render(
         request,
         'profile.html',
@@ -89,6 +99,64 @@ def login_view(request):
 
     return render(request, 'login.html')
 
+#Forgot password view
+def forgot_password_view(request):
+
+    if request.method == 'POST':
+        email = request.POST['email']
+
+        user = User.objects.filter(email=email).first()
+
+        if user is not None:
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            token = default_token_generator.make_token(user)
+
+            reset_link = request.build_absolute_uri(
+                f'/reset-password/{uid}/{token}/'
+            )
+
+            send_mail(
+                subject='Password Reset Request',
+                message=f'Click the link to reset your password: {reset_link}',
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[email],
+            )
+
+        # Show the same message whether or not the email exists
+        messages.success(request, 'If that email exists, a reset link has been sent.')
+        return redirect('login')
+
+    return render(request, 'forgot_password.html')
+
+#Reset password view
+def reset_password_view(request, uidb64, token):
+
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+
+    if user is None or not default_token_generator.check_token(user, token):
+        messages.error(request, 'This password reset link is invalid or has expired.')
+        return redirect('login')
+
+    if request.method == 'POST':
+        password = request.POST['password']
+        confirm_password = request.POST['confirm_password']
+
+        if password != confirm_password:
+            messages.error(request, 'Passwords do not match')
+            return redirect('reset_password', uidb64=uidb64, token=token)
+
+        user.set_password(password)
+        user.save()
+
+        messages.success(request, 'Password reset successful. Please log in.')
+        return redirect('login')
+
+    return render(request, 'reset_password.html')
+
 
 def logout_view(request):
     logout(request)
@@ -102,9 +170,7 @@ def dashboard_view(request):
 @login_required
 def edit_profile_view(request):
 
-    profile = ResearcherProfile.objects.get(
-        user=request.user
-    )
+    profile = get_or_create_profile(request.user)
 
     if request.method == 'POST':
 
@@ -134,9 +200,7 @@ def edit_profile_view(request):
 @login_required
 def apply_adjunct_view(request):
 
-    profile = ResearcherProfile.objects.get(
-        user=request.user
-    )
+    profile = get_or_create_profile(request.user)
 
     if request.method == 'POST':
 
@@ -180,10 +244,6 @@ def adjunct_researchers_view(request):
         is_adjunct_researcher=True
     ) .order_by('-proposals_won')  # Sort by proposals won in descending order
 
-    paginator = Paginator(researchers, 6)  # Show 6 researchers per page
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-
     if query:
 
         researchers = researchers.filter(
@@ -197,12 +257,15 @@ def adjunct_researchers_view(request):
             Q(publications__icontains=query)
 
         )
+    
+    paginator = Paginator(researchers, 6)  # Show 6 researchers per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
     return render(
         request,
         'adjunct_researchers.html',
         {
-            'researchers': researchers,
             'query': query,
             'researchers': page_obj
         }
@@ -226,9 +289,7 @@ def researcher_detail_view(request, id):
 @login_required
 def add_publication_view(request):
 
-    profile = ResearcherProfile.objects.get(
-        user=request.user
-    )
+    profile = get_or_create_profile(request.user)
 
     if request.method == 'POST':
 
@@ -258,3 +319,11 @@ def add_publication_view(request):
         'add_publication.html',
         {'form': form}
     )
+
+#notification  bell icon require login 
+@login_required
+def notifications_view(request):
+    notifications = request.user.notifications.all()
+    request.user.notifications.filter(is_read=False).update(is_read=True)
+
+    return render(request, 'notifications.html', {'notifications': notifications})
